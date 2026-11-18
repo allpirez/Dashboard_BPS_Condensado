@@ -1,6 +1,6 @@
 streamlit
 pandas
-numpy<2.0.0
+numpy==2.4.6
 pyarrow<18.0.0
 gspread
 google-auth
