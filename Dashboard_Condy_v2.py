@@ -310,10 +310,44 @@ def tabla_ranking(g, col):
     )
 
 
+
+
+
+
+def verificar_login():
+    """Bloquea el acceso al dashboard hasta validar usuario y contraseña desde st.secrets."""
+    if st.session_state.get("autenticado"):
+        return
+
+    st.markdown(CSS, unsafe_allow_html=True)
+    _, col_centro, _ = st.columns([1, 1.2, 1])
+    with col_centro:
+        with st.container(border=True):
+            st.subheader("🔒 Acceso Restringido")
+            st.caption("Condensados BPS · Dashboard Ejecutivo")
+            user_input = st.text_input("Usuario")
+            pass_input = st.text_input("Contraseña", type="password")
+            if st.button("Iniciar sesión", use_container_width=True, type="primary"):
+                auth_cfg = st.secrets.get("auth", {})
+                if (
+                    user_input == auth_cfg.get("usuario")
+                    and pass_input == auth_cfg.get("password")
+                ):
+                    st.session_state["autenticado"] = True
+                    st.rerun()
+                else:
+                    st.error("Usuario o contraseña incorrectos.")
+    st.stop()
+
+
+
+
+
 # =========================================================
 # APLICACIÓN
 # =========================================================
 def main():
+    verificar_login()
     st.markdown(CSS, unsafe_allow_html=True)
 
     df_raw, fetched_at = obtener_datos(NOMBRE_PESTANA)
